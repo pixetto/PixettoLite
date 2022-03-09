@@ -51,7 +51,7 @@ static void cksum(uint8_t *buf, int len)
   buf[len - 2] = sum;
 }
 
-static int getdata(Stream& serial, byte* buf, int buflen)
+static int getdata(Stream& serial, uint8_t* buf, int buflen)
 {
   buf[0] = 0;
   memset(buf, 0, buflen);
@@ -115,14 +115,14 @@ unsigned long pxtGetVersion(Stream& serial)
 
   while (vers == 0) {
     // Send command
-    char cmd[] = { PXT_PACKET_START, 0x05, PXT_CMD_GET_VERSION, 0, PXT_PACKET_END };
+    uint8_t cmd[] = { PXT_PACKET_START, 0x05, PXT_CMD_GET_VERSION, 0, PXT_PACKET_END };
     serial.write(cmd, sizeof(cmd));
     serial.flush();
 
     // Get result
     // ex: { FD, 9, E3, 1, 1, 6, 1, F5, FE }
 
-    byte buf[PXT_BUF_SIZE];
+    uint8_t buf[PXT_BUF_SIZE];
     int len = 0;
     if ((len = getdata(serial, buf, PXT_BUF_SIZE)) > 0) {
       if (buf[2] == PXT_CMD_GET_VERSION || buf[2] == 0xE3) {
@@ -143,7 +143,7 @@ void pxtSetFunc(Stream& serial, int id)
   if (func_id == id)
     return;
   
-  char cmd[] = { PXT_PACKET_START, 0x06, PXT_CMD_SET_FUNC, id, 0, PXT_PACKET_END };
+  uint8_t cmd[] = { PXT_PACKET_START, 0x06, PXT_CMD_SET_FUNC, id, 0, PXT_PACKET_END };
   cksum(cmd, sizeof(cmd));
   serial.write(cmd, sizeof(cmd));
   serial.flush();
@@ -152,9 +152,9 @@ void pxtSetFunc(Stream& serial, int id)
   delay(20);
 }
 
-int pxtGetData(Stream& serial, unsigned char* buf, int buflen)
+int pxtGetData(Stream& serial, byte* buf, int buflen)
 {
-  char cmd[] = { PXT_PACKET_START, 0x05, PXT_CMD_GET_DATA, 0, PXT_PACKET_END };
+  uint8_t cmd[] = { PXT_PACKET_START, 0x05, PXT_CMD_GET_DATA, 0, PXT_PACKET_END };
   cksum(cmd, sizeof(cmd));
   serial.write(cmd, sizeof(cmd));
   serial.flush();
@@ -174,12 +174,12 @@ int pxtAvailable(Stream& serial)
 {
   pxtWait(serial);
 
-  char cmd[] = { PXT_PACKET_START, 0x05, PXT_CMD_GET_OBJNUM, 0, PXT_PACKET_END };
+  uint8_t cmd[] = { PXT_PACKET_START, 0x05, PXT_CMD_GET_OBJNUM, 0, PXT_PACKET_END };
   cksum(cmd, sizeof(cmd));
   serial.write(cmd, sizeof(cmd));
   serial.flush();
 
-  unsigned char buf[PXT_BUF_SIZE];
+  uint8_t buf[PXT_BUF_SIZE];
   memset(buf, 0, PXT_BUF_SIZE);
 
   struct pxt_data* p = (struct pxt_data*) buf;

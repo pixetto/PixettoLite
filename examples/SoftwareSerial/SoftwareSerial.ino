@@ -12,29 +12,31 @@
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET
  * ENJOYMENT OR NON-INFRINGEMENT.
 */
+#include <SoftwareSerial.h>
 #include <PixettoLite.h>
 
-HardwareSerial& pxtSerial = Serial; // RX, TX = { 0, 1 }
+SoftwareSerial pxtSerial(10, 11); // RX, TX
 
 byte pxtbuf[PXT_BUF_SIZE];
 struct pxt_data* pxtdata = (struct pxt_data*)pxtbuf;
 
-int ledPin = 13;
-
 void setup()
 {
+  Serial.begin(38400);
   pxtSerial.begin(38400);
+  Serial.println(pxtGetVersion(pxtSerial), HEX);
   pxtSetFunc(pxtSerial, FUNC_COLOR_DETECTION);
 }
 
 void loop()
 {
+  char s[32];
   int n = pxtAvailable(pxtSerial);
-  if (n == 0)
-    digitalWrite(ledPin, LOW);
   while (n--) {
     if (pxtGetData(pxtSerial, pxtbuf, PXT_BUF_SIZE) > 0) {
-      digitalWrite(ledPin, HIGH);
+      sprintf(s, "%02d %d %d %d %d", pxtdata->class_id,
+              pxtdata->x, pxtdata->y, pxtdata->w, pxtdata->h);
+      Serial.println(s);
     } 
   }
 }

@@ -14,7 +14,6 @@
 */
 
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 
 #define PXT_PACKET_START        0xFD
 #define PXT_PACKET_END          0xFE
