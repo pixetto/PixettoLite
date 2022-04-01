@@ -83,15 +83,15 @@ struct pxt_data {
     } apltag; // +32
 
     struct {
-      uint8_t left_x1; 
-      uint8_t left_y1; 
-      uint8_t left_x2; 
-      uint8_t left_y2; 
+      uint8_t left_x1;
+      uint8_t left_y1;
+      uint8_t left_x2;
+      uint8_t left_y2;
 
-      uint8_t right_x1; 
-      uint8_t right_y1; 
-      uint8_t right_x2; 
-      uint8_t right_y2; 
+      uint8_t right_x1;
+      uint8_t right_y1;
+      uint8_t right_x2;
+      uint8_t right_y2;
 
       uint8_t sign_x;
       uint8_t sign_y;

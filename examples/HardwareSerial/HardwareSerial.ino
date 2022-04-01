@@ -35,6 +35,6 @@ void loop()
   while (n--) {
     if (pxtGetData(pxtSerial, pxtbuf, PXT_BUF_SIZE) > 0) {
       digitalWrite(ledPin, HIGH);
-    } 
+    }
   }
 }

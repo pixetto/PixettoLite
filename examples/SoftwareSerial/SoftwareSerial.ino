@@ -37,6 +37,6 @@ void loop()
       sprintf(s, "%02d %d %d %d %d", pxtdata->class_id,
               pxtdata->x, pxtdata->y, pxtdata->w, pxtdata->h);
       Serial.println(s);
-    } 
+    }
   }
 }

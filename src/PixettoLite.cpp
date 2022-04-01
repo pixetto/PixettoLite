@@ -16,14 +16,16 @@
 #include "PixettoLite.h"
 
 static bool debug = true;
-static int func_id = 0;
+static int s_func_id = 0;
 
+/*
 static bool is_valid(unsigned char* buf, int len)
 {
   return (buf[0] == PXT_PACKET_START &&
           buf[len - 1] == PXT_PACKET_END &&
           buf[1] == len);
 }
+*/
 
 static void dbg_dump(unsigned char* buf, int len)
 {
@@ -102,7 +104,7 @@ static void pxtWait(Stream& serial)
 {
   static bool pxt_is_ready = false;
   while (!pxt_is_ready) {
-    if (pxtGetVersion(serial) >= 0)
+    if (pxtGetVersion(serial) > 0)
       pxt_is_ready = true;
     else
       delay(100);
@@ -139,16 +141,15 @@ void pxtSetFunc(Stream& serial, int id)
 {
   pxtWait(serial);
 
-
-  if (func_id == id)
+  if (s_func_id == id || id < 0)
     return;
-  
-  uint8_t cmd[] = { PXT_PACKET_START, 0x06, PXT_CMD_SET_FUNC, id, 0, PXT_PACKET_END };
+
+  uint8_t cmd[] = { PXT_PACKET_START, 0x06, PXT_CMD_SET_FUNC, uint8_t(id), 0, PXT_PACKET_END };
   cksum(cmd, sizeof(cmd));
   serial.write(cmd, sizeof(cmd));
   serial.flush();
 
-  func_id = id;
+  s_func_id = id;
   delay(20);
 }
 
@@ -162,7 +163,7 @@ int pxtGetData(Stream& serial, byte* buf, int buflen)
 
   struct pxt_data* p = (struct pxt_data*) buf;
 
-  while ((len = getdata(serial, buf, PXT_BUF_SIZE)) > 0) {
+  while ((len = getdata(serial, buf, buflen)) > 0) {
     if (p->cmd == PXT_CMD_GET_DATA && len != 5)
       break;
   }
