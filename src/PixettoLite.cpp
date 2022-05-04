@@ -15,7 +15,7 @@
 
 #include "PixettoLite.h"
 
-static bool debug = true;
+static bool debug = false;
 static int s_func_id = 0;
 
 /*
